@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Profile } from './profile';
+import { AuthLayout } from './auth-layout';
 
-describe('Profile', () => {
-  let component: Profile;
-  let fixture: ComponentFixture<Profile>;
+describe('AuthLayout', () => {
+  let component: AuthLayout;
+  let fixture: ComponentFixture<AuthLayout>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Profile]
+      imports: [AuthLayout]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Profile);
+    fixture = TestBed.createComponent(AuthLayout);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
