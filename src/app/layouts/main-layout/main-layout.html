@@ -1,1 +1,19 @@
-<p>main-layout works!</p>
+<mat-sidenav-container class="container">
+
+  <mat-sidenav mode="side" opened>
+    <button mat-button routerLink="/dashboard">Dashboard</button>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <span>Crypto Portfolio</span>
+      <span class="spacer"></span>
+      <button mat-button (click)="logout()">Logout</button>
+    </mat-toolbar>
+
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+
+</mat-sidenav-container>
