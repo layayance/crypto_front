@@ -1,9 +1,110 @@
-<h1>Dashboard</h1>
+<div class="dashboard-container">
+  <div *ngIf="store.loading()" class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
 
-    <ul>
-      <li>BTC : 30 000 €</li>
-      <li>ETH : 1 800 €</li>
-      <li>USDT : 1 000 €</li>
-    </ul>
+  <div *ngIf="!store.loading()" class="dashboard-content">
+    <!-- Portfolio Value Card -->
+    <div class="portfolio-value-card" *ngIf="store.portfolioValue(); else noValue">
+      <div class="card-header">
+        <h3>Portfolio Value</h3>
+      </div>
+      <div class="card-body">
+        <div class="value-section">
+          <div class="main-value">${{ formatCurrency(store.portfolioValue()!.totalValue) }}</div>
+          <div class="change-info" [ngClass]="getProfitLossClass(store.portfolioValue()!.profitLoss)">
+            {{ formatPercentage(store.portfolioValue()!.profitLossPercentage) }} Today
+          </div>
+        </div>
+        <div class="chart-placeholder">
+          <div class="chart-line"></div>
+        </div>
+      </div>
+    </div>
+    <ng-template #noValue>
+      <div class="portfolio-value-card">
+        <div class="card-header">
+          <h3>Portfolio Value</h3>
+        </div>
+        <div class="card-body">
+          <div class="value-section">
+            <div class="main-value">—</div>
+            <div class="change-info neutral">Données indisponibles</div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
 
-    <h3>Total : 32 800 €</h3>
+    <!-- Top Cryptocurrencies Card -->
+    <div class="top-cryptos-card" *ngIf="store.portfolioSummary() && store.portfolioSummary()!.summary.length > 0; else noTop">
+      <div class="card-header">
+        <h3>Top Cryptocurrencies</h3>
+      </div>
+      <div class="card-body">
+        <div class="crypto-list">
+          <div class="crypto-item" *ngFor="let crypto of store.portfolioSummary()!.summary.slice(0, 4)">
+            <div class="crypto-info">
+              <div class="crypto-logo">{{ getCryptoLogo(crypto.symbol) }}</div>
+              <div class="crypto-details">
+                <div class="crypto-name">{{ crypto.symbol }}</div>
+                <div class="crypto-full-name">{{ crypto.name }}</div>
+              </div>
+            </div>
+            <div class="crypto-values">
+              <div class="crypto-price">${{ formatCurrency(crypto.currentValue) }}</div>
+              <div class="crypto-change" [class.positive]="crypto.profitLoss >= 0" 
+                   [class.negative]="crypto.profitLoss < 0">
+                {{ formatPercentage(crypto.profitLossPercentage) }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #noTop>
+      <div class="top-cryptos-card">
+        <div class="card-header">
+          <h3>Top Cryptocurrencies</h3>
+        </div>
+        <div class="card-body">
+          <div class="empty-transactions">
+            <p>Ajoute un actif pour voir ton top.</p>
+            <button mat-raised-button color="primary" (click)="openAddDialog()">
+              Add Asset
+            </button>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <!-- Recent Transactions Card -->
+    <div class="transactions-card">
+      <div class="card-header">
+        <h3>Recent Transactions</h3>
+        <button mat-icon-button class="view-all-btn">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="transactions-list" *ngIf="store.recentAssets().length > 0">
+          <div class="transaction-item" *ngFor="let asset of store.recentAssets()">
+            <div class="transaction-info">
+              <div class="transaction-icon">{{ getCryptoLogo(asset.symbol) }}</div>
+              <div class="transaction-details">
+                <div class="transaction-action">Bought {{ asset.symbol }}</div>
+                <div class="transaction-date">{{ formatDate(asset.createdAt || asset.purchaseDate) }}</div>
+              </div>
+            </div>
+            <div class="transaction-amount">${{ formatCurrency(asset.purchasePrice) }}</div>
+          </div>
+        </div>
+        <div class="empty-transactions" *ngIf="store.recentAssets().length === 0">
+          <p>No recent transactions</p>
+          <button mat-raised-button color="primary" (click)="openAddDialog()">
+            Add Asset
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

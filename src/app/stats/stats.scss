@@ -1,0 +1,230 @@
+.stats-container {
+  margin: 0;
+  background: #0f1419;
+  min-height: auto;
+  padding: 0;
+  color: white;
+}
+
+.tab-content {
+  color: white;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  min-height: 200px;
+}
+
+.value-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.value-card {
+  text-align: left;
+  background: #1a1f2e;
+  border: 1px solid #2a2f3e;
+  color: white;
+
+  mat-card-content {
+    padding: 20px;
+  }
+  
+  mat-card-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: #8b8f97;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .value-amount {
+    font-size: 28px;
+    font-weight: 600;
+    color: white;
+    margin-top: 4px;
+
+    .percentage {
+      font-size: 14px;
+      font-weight: 400;
+      display: block;
+      margin-top: 8px;
+      color: #8b8f97;
+    }
+  }
+
+  &.profit {
+    .value-amount {
+      color: #4caf50;
+      
+      .percentage {
+        color: #4caf50;
+      }
+    }
+  }
+
+  &.loss {
+    .value-amount {
+      color: #f44336;
+      
+      .percentage {
+        color: #f44336;
+      }
+    }
+  }
+
+  &.neutral {
+    .value-amount {
+      color: white;
+    }
+  }
+}
+
+.tabs-card {
+  margin-top: 16px;
+  background: #1a1f2e;
+  border: 1px solid #2a2f3e;
+  
+  ::ng-deep {
+    .mat-mdc-tab-group {
+      .mat-mdc-tab-header {
+        padding: 0 16px;
+        border-bottom: 1px solid #2a2f3e;
+        background: #1a1f2e;
+      }
+      
+      .mat-mdc-tab {
+        min-width: 120px;
+        color: #8b8f97;
+        font-weight: 500;
+        
+        &:hover {
+          background-color: #2a2f3e;
+        }
+        
+        &.mdc-tab--active {
+          color: #3f51b5;
+        }
+      }
+      
+      .mat-mdc-tab-body-wrapper {
+        background: #1a1f2e;
+      }
+    }
+  }
+}
+
+.tab-content {
+  padding: 24px;
+}
+
+.table-container {
+  overflow-x: auto;
+  border: 1px solid #2a2f3e;
+  border-radius: 6px;
+  background: #1a1f2e;
+}
+
+.stats-table {
+  width: 100%;
+  min-width: 600px;
+
+  th {
+    font-weight: 600;
+    font-size: 12px;
+    color: #8b8f97;
+    background-color: #0f1419;
+    padding: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #2a2f3e;
+  }
+
+  td {
+    padding: 16px 12px;
+    border-bottom: 1px solid #2a2f3e;
+    color: white;
+  }
+  
+  mat-row {
+    &:hover {
+      background-color: #2a2f3e !important;
+    }
+    
+    &:last-child td {
+      border-bottom: none;
+    }
+  }
+
+  .profit {
+    color: #4caf50;
+    font-weight: 500;
+  }
+
+  .loss {
+    color: #f44336;
+    font-weight: 500;
+  }
+
+  .neutral {
+    color: #8b8f97;
+  }
+
+  .percentage {
+    font-size: 12px;
+    margin-left: 6px;
+    color: #8b8f97;
+  }
+  
+  mat-chip {
+    background-color: #2a2f3e;
+    color: #8b8f97;
+    font-size: 12px;
+  }
+}
+
+.summary-footer {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #e8e8e8;
+  display: flex;
+  gap: 32px;
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+    
+    strong {
+      color: #1a1a1a;
+      margin-right: 6px;
+      font-weight: 600;
+    }
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+
+  mat-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: #ddd;
+    margin-bottom: 16px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 16px;
+    color: #888;
+  }
+}

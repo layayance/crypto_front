@@ -1,0 +1,189 @@
+<div class="stats-container">
+  <div *ngIf="store.loading()" class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div *ngIf="!store.loading()" class="stats-content">
+    <div *ngIf="!store.portfolioValue()" class="empty-state">
+      <mat-icon>error_outline</mat-icon>
+      <p>Impossible de charger les statistiques pour le moment.</p>
+    </div>
+
+    <!-- Cartes de valeur totale -->
+    <div class="value-cards" *ngIf="store.portfolioValue()">
+      <mat-card class="value-card">
+        <mat-card-header>
+          <mat-card-title>Valeur Totale</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="value-amount">{{ formatCurrency(store.portfolioValue()!.totalValue) }} $</div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="value-card">
+        <mat-card-header>
+          <mat-card-title>Total Investi</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="value-amount">{{ formatCurrency(store.portfolioValue()!.totalInvested) }} $</div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="value-card" [ngClass]="getProfitLossClass(store.portfolioValue()!.profitLoss)">
+        <mat-card-header>
+          <mat-card-title>Profit/Perte</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="value-amount">
+            {{ formatCurrency(store.portfolioValue()!.profitLoss) }} $
+            <span class="percentage">({{ formatPercentage(store.portfolioValue()!.profitLossPercentage) }})</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Onglets pour résumé et distribution -->
+    <mat-card class="tabs-card" *ngIf="store.portfolioSummary() || store.distribution() || store.history()">
+      <mat-tab-group>
+        <mat-tab label="Résumé">
+          <div class="tab-content">
+            <div class="table-container" *ngIf="store.portfolioSummary()">
+            <table mat-table [dataSource]="store.portfolioSummary()!.summary || []" class="stats-table">
+              <ng-container matColumnDef="symbol">
+                <th mat-header-cell *matHeaderCellDef>Symbole</th>
+                <td mat-cell *matCellDef="let item">
+                  <strong>{{ item.symbol }}</strong>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Nom</th>
+                <td mat-cell *matCellDef="let item">{{ item.name }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="quantity">
+                <th mat-header-cell *matHeaderCellDef>Quantité Totale</th>
+                <td mat-cell *matCellDef="let item">{{ item.totalQuantity }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="invested">
+                <th mat-header-cell *matHeaderCellDef>Investi</th>
+                <td mat-cell *matCellDef="let item">{{ formatCurrency(item.totalInvested) }} $</td>
+              </ng-container>
+
+              <ng-container matColumnDef="value">
+                <th mat-header-cell *matHeaderCellDef>Valeur Actuelle</th>
+                <td mat-cell *matCellDef="let item">{{ formatCurrency(item.currentValue) }} $</td>
+              </ng-container>
+
+              <ng-container matColumnDef="profitLoss">
+                <th mat-header-cell *matHeaderCellDef>Profit/Perte</th>
+                <td mat-cell *matCellDef="let item" [ngClass]="getProfitLossClass(item.profitLoss)">
+                  {{ formatCurrency(item.profitLoss) }} $
+                  <span class="percentage">({{ formatPercentage(item.profitLossPercentage) }})</span>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="percentage">
+                <th mat-header-cell *matHeaderCellDef>% Portefeuille</th>
+                <td mat-cell *matCellDef="let item">
+                  <mat-chip>{{ formatPercentage(item.portfolioPercentage) }}</mat-chip>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="summaryColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: summaryColumns;"></tr>
+            </table>
+            </div>
+
+            <div *ngIf="store.portfolioSummary()" class="summary-footer">
+              <p><strong>Total d'actifs:</strong> {{ store.portfolioSummary()!.totalAssets }}</p>
+              <p><strong>Cryptos uniques:</strong> {{ store.portfolioSummary()!.uniqueCryptos }}</p>
+            </div>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Distribution">
+          <div class="tab-content">
+            <div class="table-container" *ngIf="store.distribution()">
+            <table mat-table [dataSource]="store.distribution()!.distribution || []" class="stats-table">
+              <ng-container matColumnDef="symbol">
+                <th mat-header-cell *matHeaderCellDef>Symbole</th>
+                <td mat-cell *matCellDef="let item">
+                  <strong>{{ item.symbol }}</strong>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Nom</th>
+                <td mat-cell *matCellDef="let item">{{ item.name }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="value">
+                <th mat-header-cell *matHeaderCellDef>Valeur</th>
+                <td mat-cell *matCellDef="let item">{{ formatCurrency(item.value) }} $</td>
+              </ng-container>
+
+              <ng-container matColumnDef="percentage">
+                <th mat-header-cell *matHeaderCellDef>Pourcentage</th>
+                <td mat-cell *matCellDef="let item">
+                  <mat-chip>{{ formatPercentage(item.percentage) }}</mat-chip>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="distributionColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: distributionColumns;"></tr>
+            </table>
+            </div>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Historique">
+          <div class="tab-content">
+            <div *ngIf="!store.history() || store.history()!.length === 0" class="empty-state">
+              <mat-icon>history</mat-icon>
+              <p>Aucun historique disponible</p>
+            </div>
+            <div class="table-container" *ngIf="store.history() && store.history()!.length > 0">
+            <table mat-table [dataSource]="store.history() || []" class="stats-table">
+              <ng-container matColumnDef="date">
+                <th mat-header-cell *matHeaderCellDef>Date</th>
+                <td mat-cell *matCellDef="let item">{{ formatDate(item.date || item.createdAt) }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>Action</th>
+                <td mat-cell *matCellDef="let item">
+                  <mat-chip [color]="getActionColor(item.action)">
+                    {{ item.action || 'Ajout' }}
+                  </mat-chip>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="symbol">
+                <th mat-header-cell *matHeaderCellDef>Symbole</th>
+                <td mat-cell *matCellDef="let item">
+                  <strong>{{ item.symbol }}</strong>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="quantity">
+                <th mat-header-cell *matHeaderCellDef>Quantité</th>
+                <td mat-cell *matCellDef="let item">{{ item.quantity }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="price">
+                <th mat-header-cell *matHeaderCellDef>Prix</th>
+                <td mat-cell *matCellDef="let item">{{ formatCurrency(item.purchasePrice || item.price) }} $</td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="historyColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: historyColumns;"></tr>
+            </table>
+            </div>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card>
+  </div>
+</div>

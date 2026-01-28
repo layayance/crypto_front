@@ -1,23 +1,51 @@
-import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Router, RouterOutlet, RouterLink } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterOutlet, RouterLink } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
+import { ApiService } from '../../core/services/api.service';
 
 @Component({
   standalone: true,
   selector: 'app-main-layout',
-  imports: [RouterOutlet,
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    RouterLink,
     MatToolbarModule,
-    MatSidenavModule,
-    MatButtonModule,],
+    MatButtonModule,
+    MatIconModule
+  ],
   templateUrl: './main-layout.html',
   styleUrls: ['./main-layout.scss']
 })
-export class MainLayoutComponent {
-  constructor(private router: Router) {}
+export class MainLayoutComponent implements OnInit {
+  userEmail: string | null = null;
+
+  constructor(
+    private authService: AuthService,
+    private apiService: ApiService
+  ) {}
+
+  ngOnInit() {
+    this.loadUserInfo();
+  }
+
+  loadUserInfo() {
+    this.apiService.getMe().subscribe({
+      next: (user) => {
+        this.userEmail = user.email;
+      },
+      error: () => {
+        // En cas d'erreur, on ne bloque pas l'application
+        this.userEmail = null;
+      }
+    });
+  }
 
   logout() {
-    this.router.navigate(['/login']);
+    this.authService.logout();
   }
 }

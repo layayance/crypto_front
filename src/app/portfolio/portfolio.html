@@ -1,0 +1,76 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon>account_balance_wallet</mat-icon>
+      Mon Portefeuille
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="header-actions">
+      <button mat-raised-button color="primary" (click)="openAddDialog()">
+        <mat-icon>add</mat-icon>
+        Ajouter un actif
+      </button>
+    </div>
+
+    <div *ngIf="store.loading()" class="loading-container">
+      <mat-spinner></mat-spinner>
+    </div>
+
+    <div *ngIf="!store.loading() && store.assets().length === 0" class="empty-state">
+      <mat-icon>inbox</mat-icon>
+      <p>Aucun actif dans votre portefeuille</p>
+      <button mat-raised-button color="primary" (click)="openAddDialog()">
+        Ajouter votre premier actif
+      </button>
+    </div>
+
+    <div class="table-container" *ngIf="!store.loading() && store.assets().length > 0">
+    <table mat-table [dataSource]="store.assets()" class="portfolio-table">
+      <ng-container matColumnDef="symbol">
+        <th mat-header-cell *matHeaderCellDef>Symbole</th>
+        <td mat-cell *matCellDef="let asset">
+          <strong>{{ asset.symbol }}</strong>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Nom</th>
+        <td mat-cell *matCellDef="let asset">{{ asset.name }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="quantity">
+        <th mat-header-cell *matHeaderCellDef>Quantité</th>
+        <td mat-cell *matCellDef="let asset">{{ asset.quantity }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="purchasePrice">
+        <th mat-header-cell *matHeaderCellDef>Prix d'achat</th>
+        <td mat-cell *matCellDef="let asset">{{ formatPrice(asset.purchasePrice) }} $</td>
+      </ng-container>
+
+      <ng-container matColumnDef="purchaseDate">
+        <th mat-header-cell *matHeaderCellDef>Date d'achat</th>
+        <td mat-cell *matCellDef="let asset">{{ formatDate(asset.purchaseDate) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let asset">
+          <button mat-icon-button color="primary" (click)="openEditDialog(asset)" 
+                  matTooltip="Modifier cet actif" matTooltipPosition="above">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteAsset(asset)" 
+                  matTooltip="Supprimer cet actif" matTooltipPosition="above">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    </div>
+  </mat-card-content>
+</mat-card>
